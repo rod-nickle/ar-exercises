@@ -38,7 +38,16 @@ ActiveRecord::Schema.define do
     table.column :last_name, :string
     table.column :hourly_rate, :integer
     table.timestamps null: false
+
   end
+end
+
+class Store
+  has_many :employees
+end
+
+class Employee
+  belongs_to :store
 end
 
 puts 'Setup DONE'

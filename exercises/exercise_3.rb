@@ -11,7 +11,7 @@ puts "----------"
 @store3.destroy
 
 stores = Store.all.order(:id)
-# puts "The number of stores are: #{stores.count}"
+puts "The number of stores are: #{stores.count}"
 stores.each do |store|
   puts "Store \##{store[:id]}: #{store[:name]}"
 end
