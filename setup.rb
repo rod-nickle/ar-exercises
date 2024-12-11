@@ -23,8 +23,8 @@ puts 'CONNECTED'
 puts 'Setting up Database (recreating tables) ...'
 
 ActiveRecord::Schema.define do
-  drop_table :stores if ActiveRecord::Base.connection.table_exists?(:stores)
   drop_table :employees if ActiveRecord::Base.connection.table_exists?(:employees)
+  drop_table :stores if ActiveRecord::Base.connection.table_exists?(:stores)
   create_table :stores do |t|
     t.column :name, :string
     t.column :annual_revenue, :integer
@@ -33,7 +33,7 @@ ActiveRecord::Schema.define do
     t.timestamps null: false
   end
   create_table :employees do |table|
-    table.references :store
+    table.references :store #, foreign_key: true
     table.column :first_name, :string
     table.column :last_name, :string
     table.column :hourly_rate, :integer
@@ -42,12 +42,26 @@ ActiveRecord::Schema.define do
   end
 end
 
-class Store
+class Store 
   has_many :employees
+  
+  validates :name, length: { minimum: 3 }
+  validates :annual_revenue, numericality: { 
+    only_integer: true,
+    greater_than_or_equal_to: 0 }
 end
+
 
 class Employee
   belongs_to :store
+  validates_associated :store
+
+  validates :store_id, presence: true
+  validates :first_name, :last_name, presence: true
+  validates :hourly_rate, numericality: { 
+    greater_than_or_equal_to: 40, 
+    less_than_or_equal_to: 200 
+  }
 end
 
 puts 'Setup DONE'
